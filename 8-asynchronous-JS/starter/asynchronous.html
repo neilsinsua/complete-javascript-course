@@ -9,6 +9,132 @@
 <body>
     <h1>Asynchronous JavaScript</h1>
     <script>
+         /* const first = () => {
+             console.log('1');
+             second();
+             console.log('the end')
+         }
+         const second = () => {
+             setTimeout( () => {
+                console.log('async 1')
+             },
+             3000
+             );
+         }
+        first(); */
+
+        // new promise getIDs
+        const getIDs = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve([1, 2, 3]);
+            }, 1000)// resolves promise after 1 second returning array
+        })
+
+        //new function recipe
+        const getRecipe = (recID) => {
+            return new Promise((resolve, reject) => {
+                setTimeout((ID) => {
+                    const rec1 = {title: 'test', author: 'neil'};
+                    resolve(`${ID}: ${rec1.title} by ${rec1.author}`)
+                }, 1000, recID);
+            })
+        }
+
+        const getRel = (author) => {
+            return new Promise((resolve, reject) => {
+                setTimeout((auth) => {
+                    rec2 = {title:'test2', author:'neil'};
+                    resolve(`${auth}: ${rec2.title}`);
+                }, 1000, author);
+            })
+        }
+
+        //Promise ID fufilment
+       /*  getIDs.then((resultID) => {
+            console.log(resultID);
+            return getRecipe(resultID[1]);
+        })
+        //Promise Recipe fufilment
+        .then((resultRec) => {
+            console.log(resultRec);
+            return getRel('neil');
+        })
+        //Promise Related fufilment
+        .then((resultRel) => {
+            console.log(resultRel)
+        })
+        .catch((errorRec) => {
+            console.log('Error Recipe')
+        })
+        .catch((errorID) => {
+            console.log('Error IDs');
+        }) */
+
+        //async await consume Promises
+        /* async function recipeIDAW() {
+            const resID = await getIDs;
+            console.log(resID);
+            const resRec = await getRecipe(resID[1]);
+            console.log(resRec);
+            const resRel = await getRel('Neil')
+            console.log(resRel);
+
+            return resRec;
+        };
+
+        recipeIDAW().then(result => {
+            console.log(`this is the recipe: ${result}`);
+        }); */
+        const woeIDs = {
+            melbourne: 1103816,
+            canberra: 1100968,
+            brisbane: 1100661
+        }
+
+        function getMinMaxWeather(woeid) {
+            const corsPrefix = 'https://cors-anywhere.herokuapp.com/'
+            fetch(corsPrefix + `https://www.metaweather.com/api/location/${woeid}/`)
+            .then(result => {
+            return result.json();
+            })
+            .then(json => {
+            const data = json;
+            console.log(data);
+            console.log(`Temperature in ${data.title} today, is between ${data.consolidated_weather[0].max_temp.toFixed(1)}C and ${data.consolidated_weather[0].min_temp.toFixed(1)}C`);
+            })
+            .catch(error => {
+            console.log('Error not found');
+            })
+        };
+
+    
+        async function getMinMaxWeatherAW(woeid) {
+            try {
+                const corsPrefix = 'https://cors-anywhere.herokuapp.com/';
+                let res = await fetch(corsPrefix + `https://www.metaweather.com/api/location/${woeid}/`);
+                let data = await res.json();
+                console.log(`Temperature in ${data.title} today, is between ${data.consolidated_weather[0].max_temp.toFixed(1)}C and ${data.consolidated_weather[0].min_temp.toFixed(1)}C`);
+                return data;
+            } catch(error) {
+                console.log(error);
+            }
+            
+        }
+        
+        //display weather
+        getMinMaxWeatherAW(woeIDs.melbourne);
+        //store and display weather
+        let data;
+        getMinMaxWeatherAW(woeIDs.melbourne).then(result => {
+            data = result;
+            console.log(data);
+        });
+
+        
+
+        
+
+        
         
     </script>
 </body>
